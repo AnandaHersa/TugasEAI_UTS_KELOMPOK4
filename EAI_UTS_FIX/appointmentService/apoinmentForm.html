@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Appointment (Automatic)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 50%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #eaf8e0;
+            border: 1px solid #c7e7b7;
+            border-radius: 5px;
+            display: none;
+        }
+        .response.error {
+            background-color: #f8e0e0;
+            border-color: #e7b7b7;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Appointment Created Automatically</h2>
+        <div class="response" id="responseMessage"></div>
+    </div>
+
+    <script>
+        // Data otomatis untuk janji temu yang ingin dibuat
+        const appointmentData = {
+            patient_id: 1,  // ID Pasien
+            doctor_id: 2,   // ID Dokter
+            appointment_date: "2025-06-15T10:00:00"  // Tanggal dan Waktu Janji Temu
+        };
+
+        // Menampilkan pesan bahwa pesanan sedang diproses
+        setTimeout(() => {
+            console.log("Mengirim data janji temu secara otomatis...");
+
+            // Mengirim data ke API AppointmentService
+            fetch('http://localhost:8003/appointments', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(appointmentData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Menampilkan pesan sukses setelah data berhasil dikirim
+                document.getElementById('responseMessage').style.display = 'block';
+                document.getElementById('responseMessage').innerHTML = `Janji Temu berhasil dibuat untuk Pasien ID: ${appointmentData.patient_id} dengan Dokter ID: ${appointmentData.doctor_id} pada ${appointmentData.appointment_date}`;
+                document.getElementById('responseMessage').classList.remove('error');
+            })
+            .catch(error => {
+                // Menampilkan pesan error jika gagal
+                document.getElementById('responseMessage').style.display = 'block';
+                document.getElementById('responseMessage').innerHTML = "Error creating appointment: " + error.message;
+                document.getElementById('responseMessage').classList.add('error');
+            });
+        }, 1000);
+    </script>
+
+</body>
+</html>
